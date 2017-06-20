@@ -3,10 +3,11 @@ import fileinput
 import numpy
 import sys
 import codecs
+import argparse
 
 from collections import OrderedDict
 
-def main(filename, short_list, src):
+def main(filename, short_list=None, src=None):
     # Build character dictionaries
     print 'Processing', filename
     word_freqs = OrderedDict()
@@ -60,9 +61,17 @@ def main(filename, short_list, src):
             worddict[ww] = ii + len(tokens)
 
     print 'start dump'
-    with open('%s.%d.pkl' % (filename, short_list+len(tokens)), 'wb') as f:
+    with open('%s.pkl' % filename, 'wb') as f:
         pkl.dump(worddict, f)
 
     f.close()
     print 'Done'
     print len(worddict)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-filename', type=str, default='all_src-tgt.src.tok')
+    parser.add_argument('-short-list', type=str, required=False, default=None)
+    parser.add_argument('-src', type=str, required=False, default=None)
+    args = parser.parse_args()
+    main(args.filename, args.short_list, args.src)

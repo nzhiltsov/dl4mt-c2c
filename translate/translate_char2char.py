@@ -6,7 +6,7 @@ import time
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-sys.path.insert(0, "/misc/kcgscratch1/ChoGroup/jasonlee/dl4mt-c2c/char2char") # change appropriately
+sys.path.insert(0, "char2char") # change appropriately
 
 import numpy
 import cPickle as pkl
@@ -185,12 +185,12 @@ if __name__ == "__main__":
     else:
         which_wmt = "wmt15"
 
-    data_path = "/misc/kcgscratch1/ChoGroup/jasonlee/temp_data/%s/" % which_wmt # change appropriately
+    data_path = "data/spellcheck/"
 
-    if args.which not in "dev test1 test2".split():
+    if args.which not in "dev test test1 test2 smalltest".split():
         raise Exception('1')
 
-    if args.translate not in ["de_en", "cs_en", "fi_en", "ru_en"]:
+    if args.translate not in ["de_en", "cs_en", "fi_en", "ru_en", "src_tgt"]:
         raise Exception('1')
 
     if args.translate == "fi_en" and args.which == "test2":
@@ -210,8 +210,8 @@ if __name__ == "__main__":
         lang = aa[0]
         en = aa[1]
 
-        dictionary = "%s%s/train/all_%s-%s.%s.tok.304.pkl" % (lang, en, lang, en, lang)
-        dictionary_target = "%s%s/train/all_%s-%s.%s.tok.300.pkl" % (lang, en, lang, en, en)
+        dictionary = "%s%s/train/all_%s-%s.%s.tok.pkl" % (lang, en, lang, en, lang)
+        dictionary_target = "%s%s/train/all_%s-%s.%s.tok.pkl" % (lang, en, lang, en, en)
         source = wmts[args.translate][args.which][0][0]
 
     char_base = args.model.split("/")[-1]
