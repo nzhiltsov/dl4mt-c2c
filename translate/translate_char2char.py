@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 import time
+import itertools
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -11,6 +12,7 @@ sys.path.insert(0, "char2char") # change appropriately
 import numpy
 import cPickle as pkl
 from mixer import *
+from operator import itemgetter
 
 def translate_model(jobqueue, resultqueue, model, options, k, normalize, build_sampler, gen_sample, init_params, model_id, silent):
 
@@ -39,10 +41,14 @@ def translate_model(jobqueue, resultqueue, model, options, k, normalize, build_s
 
         # normalize scores according to sequence lengths
         if normalize:
-            lengths = numpy.array([len(s) for s in sample]) 
+            lengths = numpy.array([len(s) for s in sample])
             score = score / lengths
-        sidx = numpy.argmin(score)
-        return sample[sidx]
+        sidx = numpy.argsort(score)[:k]
+        topsentences = list(itemgetter(*sidx)(sample))
+        topscores = list(itemgetter(*sidx)(score))
+        print topsentences
+        print topscores
+        return zip(topsentences, topscores)
 
     while jobqueue:
         req = jobqueue.pop(0)
@@ -91,9 +97,9 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
     resultqueue = []
 
     # utility function
-    def _seqs2words(caps):
+    def _seqs2words(trans):
         capsw = []
-        for cc in caps:
+        for cc, s in itertools.chain(*trans):
             ww = []
             for w in cc:
                 if w == 0:
@@ -103,9 +109,9 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
                 else:
                     ww.append(word_idict_trg[w])
             if decoder_chr_level:
-                capsw.append(''.join(ww))
+                capsw.append(''.join(ww) + '\t' + str(s))
             else:
-                capsw.append(' '.join(ww))
+                capsw.append(' '.join(ww) + '\t' + str(s))
         return capsw
 
     def _send_jobs(fname):
@@ -187,7 +193,7 @@ if __name__ == "__main__":
 
     data_path = "data/spellcheck/"
 
-    if args.which not in "dev test test1 test2 smalltest".split():
+    if args.which not in "dev test test1 test2 smalltest tinytest".split():
         raise Exception('1')
 
     if args.translate not in ["de_en", "cs_en", "fi_en", "ru_en", "src_tgt"]:

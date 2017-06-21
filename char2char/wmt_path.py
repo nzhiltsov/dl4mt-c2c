@@ -199,6 +199,14 @@ srctgt={
 
         ["srctgt/smalltest/all_src-tgt.src.tok.bpe",
          "srctgt/smalltest/all_src-tgt.tgt.tok.bpe",],
+    ],
+
+    "tinytest":[
+        ["srctgt/tinytest/all_src-tgt.src.tok",
+         "srctgt/tinytest/all_src-tgt.tgt.tok",],
+
+        ["srctgt/tinytest/all_src-tgt.src.tok.bpe",
+         "srctgt/tinytest/all_src-tgt.tgt.tok.bpe",],
     ]
 }
 
