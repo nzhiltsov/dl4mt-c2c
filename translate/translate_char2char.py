@@ -46,8 +46,6 @@ def translate_model(jobqueue, resultqueue, model, options, k, normalize, build_s
         sidx = numpy.argsort(score)[:k]
         topsentences = list(itemgetter(*sidx)(sample))
         topscores = list(itemgetter(*sidx)(score))
-        print topsentences
-        print topscores
         return zip(topsentences, topscores)
 
     while jobqueue:
