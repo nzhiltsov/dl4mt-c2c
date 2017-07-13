@@ -97,6 +97,7 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
     # utility function
     def _seqs2words(trans):
         capsw = []
+        i = 0
         for cc, s in itertools.chain(*trans):
             ww = []
             for w in cc:
@@ -107,7 +108,8 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
                 else:
                     ww.append(word_idict_trg[w])
             if decoder_chr_level:
-                capsw.append(''.join(ww) + '\t' + str(s))
+                i += 1
+                capsw.append('%d) ' % (i % k) + ''.join(ww) + '\t' + str(s))
             else:
                 capsw.append(' '.join(ww) + '\t' + str(s))
         return capsw
@@ -189,7 +191,7 @@ if __name__ == "__main__":
     else:
         which_wmt = "wmt15"
 
-    data_path = "data/spellcheck/"
+    data_path = "/mnt/storage/nzhiltsov/spellcheck/data/spellcheck/"
 
     if args.which not in "dev test test1 test2 smalltest tinytest".split():
         raise Exception('1')
