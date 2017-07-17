@@ -90,6 +90,7 @@ if __name__ == '__main__':
     import sys, time
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('-task', type=str, default="spellcheck", help="spellcheck / lj-hints")
     parser.add_argument('-translate', type=str, default="de_en", help="de_en / cs_en / fi_en / ru_en")
     parser.add_argument('-highway', type=int, default=4)
 
@@ -154,8 +155,8 @@ if __name__ == '__main__':
     args.conv_width = [ int(x) for x in args.conv_width.split("-") ]
     args.conv_nkernels = [ int(x) for x in args.conv_nkernels.split("-") ]
 
-    args.model_path = "models/" # change accordingly
-    args.data_path = "data/spellcheck/" # change accordingly
+    args.model_path = "models/%s" % args.task # change accordingly
+    args.data_path = "data/%s/" % args.task  # change accordingly
     args.model_path = args.model_path + args.translate + "/"
 
     print "Model path:", args.model_path
