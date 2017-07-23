@@ -39,7 +39,7 @@ def pred_probs(f_log_probs, prepare_data, options, iterator, pool_stride, verbos
 
         x, x_mask, y, y_mask, n_x = prepare_data(x, y, pool_stride)
 
-        pprobs = f_log_probs(x, x_mask, y, y_mask)
+        pprobs = f_log_probs(x, x_mask, y, y_mask,cost_mask)
         for pp in pprobs:
             probs.append(pp)
 
@@ -231,10 +231,10 @@ def train(
     trng, use_noise, \
         x, x_mask, y, y_mask, \
         opt_ret, \
-        cost = \
+        cost, cost_mask = \
         build_model(tparams, model_options)
     # NOTE : this is where we build the model
-    inps = [x, x_mask, y, y_mask]
+    inps = [x, x_mask, y, y_mask, cost_mask]
 
     print 'Building sampler...\n',
     f_init, f_next = build_sampler(tparams, model_options, trng, use_noise)
@@ -366,7 +366,7 @@ def train(
             uidx += 1
             use_noise.set_value(1.)
 
-            x, x_mask, y, y_mask, n_x = prepare_data(x,
+            x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x,
                                                      y,
                                                      pool_stride,
                                                      maxlen=maxlen,
@@ -387,9 +387,9 @@ def train(
             # compute cost, grads and copy grads to shared variables
 
             if clip_c > 0:
-                cost, not_finite, clipped = f_grad_shared(x, x_mask, y, y_mask)
+                cost, not_finite, clipped = f_grad_shared(x, x_mask, y, y_mask, cost_mask)
             else:
-                cost = f_grad_shared(x, x_mask, y, y_mask)
+                cost = f_grad_shared(x, x_mask, y, y_mask, cost_mask)
 
             if clipped:
                 clipped_cnt += 1

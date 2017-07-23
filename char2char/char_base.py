@@ -88,6 +88,8 @@ def build_model(tparams, options):
     y = tensor.matrix('y', dtype='int64')
     y_mask = tensor.matrix('y_mask', dtype='float32')
 
+    cost_mask = tensor.matrix('cost_mask', dtype='float32')
+
     xr_mask = x_mask[::-1]
 
     n_samples = x.shape[1]
@@ -170,9 +172,9 @@ def build_model(tparams, options):
     y_flat_idx = tensor.arange(y_flat.shape[0]) * options['n_words'] + y_flat
     cost = -tensor.log(probs.flatten()[y_flat_idx])
     cost = cost.reshape([y.shape[0], y.shape[1]])
-    cost = (cost * y_mask).sum(0)
+    cost = (cost * y_mask * cost_mask).sum(0)
 
-    return trng, use_noise, x, x_mask, y, y_mask, opt_ret, cost
+    return trng, use_noise, x, x_mask, y, y_mask, opt_ret, cost, cost_mask
 
 def build_sampler(tparams, options, trng, use_noise):
 

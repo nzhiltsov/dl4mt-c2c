@@ -232,10 +232,10 @@ def train(
     trng, use_noise, \
         x, x_mask, y, y_mask, \
         opt_ret, \
-        cost = \
+        cost, cost_mask = \
         build_model(tparams, model_options)
     # NOTE : this is where we build the model
-    inps = [x, x_mask, y, y_mask]
+    inps = [x, x_mask, y, y_mask, cost_mask]
 
     print 'Building sampler...\n',
     f_init, f_next = build_sampler(tparams, model_options, trng, use_noise)
@@ -370,7 +370,7 @@ def train(
             uidx += 1
             use_noise.set_value(1.)
 
-            x, x_mask, y, y_mask, n_x = prepare_data(x,
+            x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x,
                                                      y,
                                                      pool_stride,
                                                      maxlen=maxlen,
