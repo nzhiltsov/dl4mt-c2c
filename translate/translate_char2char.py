@@ -97,6 +97,7 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
     # utility function
     def _seqs2words(trans):
         capsw = []
+        i = 0
         for cc, s in itertools.chain(*trans):
             ww = []
             for w in cc:
@@ -107,7 +108,8 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
                 else:
                     ww.append(word_idict_trg[w])
             if decoder_chr_level:
-                capsw.append(''.join(ww) + '\t' + str(s))
+                i += 1
+                capsw.append('%d) ' % (i % k) + ''.join(ww) + '\t' + str(s))
             else:
                 capsw.append(' '.join(ww) + '\t' + str(s))
         return capsw
@@ -168,6 +170,7 @@ def main(model, dictionary, dictionary_target, source_file, saveto, k=5,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('-task', type=str, default='spellcheck', help="spellcheck / lj-hints")
     parser.add_argument('-k', type=int, default=20) # beam width
     parser.add_argument('-n', action="store_true", default=True) # normalize scores for different hypothesis based on their length (to penalize shorter hypotheses, longer hypotheses are already penalized by the BLEU measure, which is precision of sorts).
     parser.add_argument('-enc_c', action="store_true", default=True) # is encoder character-level?
@@ -189,7 +192,7 @@ if __name__ == "__main__":
     else:
         which_wmt = "wmt15"
 
-    data_path = "data/spellcheck/"
+    data_path = "data/%s/" % args.task
 
     if args.which not in "dev test test1 test2 smalltest tinytest".split():
         raise Exception('1')
