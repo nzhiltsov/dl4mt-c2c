@@ -66,5 +66,5 @@ def prepare_data(seqs_x, seqs_y, pool_stride, maxlen=None, maxlen_trg=None):
     x_m = conv_mask_pool(x_mask, pool_stride)
     # x_m.shape = (maxlen_x_pad/pool_stride, n_samples)
     # x_m is used as masks at the GRU layer, note its length is reduced by pool_stride.
-    input_weights = numpy.ones((n_samples,)).astype('int64')
+    input_weights = numpy.ones((n_samples,)).astype('float32')
     return x, x_m, y, y_mask, n_samples, input_weights
