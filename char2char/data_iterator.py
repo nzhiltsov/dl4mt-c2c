@@ -217,8 +217,7 @@ class TextIterator:
                     target.append(tt)
 
                 if self.weight is not None:
-                    ww = self.weight_buffer.pop()
-                    weight.append(map(float, ww))
+                    weight = self.weight_buffer.pop()
 
                 if len(source) >= self.batch_size:
                     break
