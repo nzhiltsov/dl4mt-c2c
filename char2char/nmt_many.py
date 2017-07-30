@@ -363,7 +363,7 @@ def train(
         else:
             cidx = 0
 
-        for x, y in train:
+        for x, y, w in train:
         # NOTE : x, y are [sen1, sen2, sen3 ...] where sen_i are of different length
             update_idx += 1
             cidx += 1
@@ -372,6 +372,7 @@ def train(
 
             x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x,
                                                      y,
+                                                     w,
                                                      pool_stride,
                                                      maxlen=maxlen,
                                                      maxlen_trg=maxlen_trg,
@@ -391,9 +392,9 @@ def train(
             # compute cost, grads and copy grads to shared variables
 
             if clip_c > 0:
-                cost, not_finite, clipped = f_grad_shared(x, x_mask, y, y_mask)
+                cost, not_finite, clipped = f_grad_shared(x, x_mask, y, y_mask, cost_mask)
             else:
-                cost = f_grad_shared(x, x_mask, y, y_mask)
+                cost = f_grad_shared(x, x_mask, y, y_mask, cost_mask)
 
             if clipped:
                 clipped_cnt += 1
