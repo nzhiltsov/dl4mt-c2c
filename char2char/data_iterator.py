@@ -20,7 +20,7 @@ class TextIterator:
     """Simple Bitext iterator."""
     def __init__(self,
                  source, source_dict,
-                 target=None, target_dict=None,
+                 target=None, weight=None, target_dict=None,
                  source_word_level=0,
                  target_word_level=0,
                  batch_size=128,
@@ -31,6 +31,7 @@ class TextIterator:
                  shuffle_per_epoch=False):
         self.source_file = source
         self.target_file = target
+        self.weight_file = weight
         self.source = fopen(source, 'r')
         with open(source_dict, 'rb') as f:
             self.source_dict = cPickle.load(f)
@@ -42,6 +43,11 @@ class TextIterator:
         else:
             self.target = None
 
+        if weight is not None:
+            self.weight = fopen(weight, 'r')
+        else:
+            self.weight = None
+
         self.source_word_level = source_word_level
         self.target_word_level = target_word_level
         self.batch_size = batch_size
@@ -52,6 +58,7 @@ class TextIterator:
 
         self.source_buffer = []
         self.target_buffer = []
+        self.weight_buffer = []
         self.k = batch_size * sort_size
 
         self.end_of_data = False
@@ -70,14 +77,17 @@ class TextIterator:
             else:
                 self.target.close()
                 # shuffle *original* source files,
-                self.shuffle([self.source_file, self.target_file])
+                self.shuffle([self.source_file, self.target_file, self.weight_file])
                 # open newly 're-shuffled' file as input
                 self.source = fopen(self.source_file + '.reshuf_%d' % self.job_id, 'r')
                 self.target = fopen(self.target_file + '.reshuf_%d' % self.job_id, 'r')
+                self.weight = fopen(self.weight_file + '.reshuf_%d' % self.job_id, 'r')
         else:
             self.source.seek(0)
             if self.target is not None:
                 self.target.seek(0)
+            if self.weight is not None:
+                self.weight.seek(0)
 
     @staticmethod
     def shuffle(files):
@@ -109,6 +119,7 @@ class TextIterator:
 
         source = []
         target = []
+        weight = []
 
         # fill buffer, if it's empty
         if self.target is not None:
@@ -147,19 +158,28 @@ class TextIterator:
                     #self.target_buffer.insert(rand_idx, tt)
                     self.target_buffer.append(tt)
 
+                if self.weight is not None:
+                    ww = self.weight.readline()
+                    if ww == "":
+                        break
+                    self.weight_buffer.append(ww)
+
             if self.target is not None:
                 # sort by target buffer
                 tlen = numpy.array([len(t) for t in self.target_buffer])
                 tidx = tlen.argsort()
                 _sbuf = [self.source_buffer[i] for i in tidx]
+                _wbuf = [self.weight_buffer[i] for i in tidx]
                 _tbuf = [self.target_buffer[i] for i in tidx]
                 self.target_buffer = _tbuf
             else:
                 slen = numpy.array([len(s) for s in self.source_buffer])
                 sidx = slen.argsort()
                 _sbuf = [self.source_buffer[i] for i in sidx]
+                _wbuf = [self.weight_buffer[i] for i in sidx]
 
             self.source_buffer = _sbuf
+            self.weight_buffer = _wbuf
 
         if self.target is not None:
             if len(self.source_buffer) == 0 or len(self.target_buffer) == 0:
@@ -196,6 +216,10 @@ class TextIterator:
                         tt = [w if w < self.n_words_target else 1 for w in tt]
                     target.append(tt)
 
+                if self.weight is not None:
+                    ww = self.weight_buffer.pop()
+                    weight.append(ww)
+
                 if len(source) >= self.batch_size:
                     break
         except IOError:
@@ -206,7 +230,7 @@ class TextIterator:
                 self.end_of_data = False
                 self.reset()
                 raise StopIteration
-            return source, target
+            return source, target, weight
         else:
             if len(source) <= 0:
                 self.end_of_data = False

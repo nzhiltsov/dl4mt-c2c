@@ -17,7 +17,7 @@ from collections import OrderedDict
 from mixer import *
 
 # batch preparation for char2char models
-def prepare_data(seqs_x, seqs_y, pool_stride, maxlen=None, maxlen_trg=None):
+def prepare_data(seqs_x, seqs_y, seqs_w, pool_stride, maxlen=None, maxlen_trg=None):
     # x: a list of sentences
     lengths_x = [len(s) for s in seqs_x]
     lengths_y = [len(s) for s in seqs_y]
@@ -25,21 +25,24 @@ def prepare_data(seqs_x, seqs_y, pool_stride, maxlen=None, maxlen_trg=None):
     if maxlen is not None:
         new_seqs_x = []
         new_seqs_y = []
+        new_seqs_w = []
         new_lengths_x = []
         new_lengths_y = []
-        for l_x, s_x, l_y, s_y in zip(lengths_x, seqs_x, lengths_y, seqs_y):
+        for l_x, s_x, l_y, s_y, s_w in zip(lengths_x, seqs_x, lengths_y, seqs_y, seqs_w):
             if l_x < maxlen and l_y < maxlen_trg:
                 new_seqs_x.append(s_x)
                 new_lengths_x.append(l_x)
                 new_seqs_y.append(s_y)
                 new_lengths_y.append(l_y)
+                new_seqs_w.append(s_w)
         lengths_x = new_lengths_x
         seqs_x = new_seqs_x
         lengths_y = new_lengths_y
         seqs_y = new_seqs_y
+        seqs_w = new_seqs_w
 
         if len(lengths_x) < 1 or len(lengths_y) < 1:
-            return None, None, None, None, None
+            return None, None, None, None, None, None
 
     # n_samples is not always equal to batch_size, can be smaller!
     n_samples = len(seqs_x)
@@ -66,5 +69,5 @@ def prepare_data(seqs_x, seqs_y, pool_stride, maxlen=None, maxlen_trg=None):
     x_m = conv_mask_pool(x_mask, pool_stride)
     # x_m.shape = (maxlen_x_pad/pool_stride, n_samples)
     # x_m is used as masks at the GRU layer, note its length is reduced by pool_stride.
-    input_weights = numpy.ones((maxlen_y, n_samples)).astype('float32') # TODO: read from a file
+    input_weights = numpy.array(seqs_w).astype('float32') # TODO: read from a file
     return x, x_m, y, y_mask, n_samples, input_weights

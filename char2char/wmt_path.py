@@ -171,7 +171,8 @@ srctgt={
 
     "train":[
         ["srctgt/train/all_src-tgt.src.tok",
-         "srctgt/train/all_src-tgt.tgt.tok",],
+         "srctgt/train/all_src-tgt.tgt.tok",
+         "srctgt/train/all_src-tgt.weight.txt"],
 
         ["srctgt/train/all_src-tgt.src.tok.bpe",
          "srctgt/train/all_src-tgt.tgt.tok.bpe",],
@@ -179,7 +180,8 @@ srctgt={
 
     "dev":[
         ["srctgt/dev/all_src-tgt.src.tok",
-         "srctgt/dev/all_src-tgt.tgt.tok",],
+         "srctgt/dev/all_src-tgt.tgt.tok",
+         "srctgt/dev/all_src-tgt.weight.txt"],
 
         ["srctgt/dev/all_src-tgt.src.tok.bpe",
          "srctgt/dev/all_src-tgt.tgt.tok.bpe",],

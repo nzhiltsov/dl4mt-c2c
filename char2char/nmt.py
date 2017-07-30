@@ -205,6 +205,7 @@ def train(
     print 'Loading data'
     train = TextIterator(source=datasets[0],
                          target=datasets[1],
+                         weight=datasets[2],
                          source_dict=dictionaries[0],
                          target_dict=dictionaries[1],
                          n_words_source=n_words_src,
@@ -358,7 +359,7 @@ def train(
         else:
             cidx = 0
 
-        for x, y in train:
+        for x, y, w in train:
         # NOTE : x, y are [sen1, sen2, sen3 ...] where sen_i are of different length
         # NOTE : at this time, x, y are simply python lists
         # NOTE : after prepare_data they get converted to numpy lists
@@ -368,6 +369,7 @@ def train(
 
             x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x,
                                                      y,
+                                                     w,
                                                      pool_stride,
                                                      maxlen=maxlen,
                                                      maxlen_trg=maxlen_trg,

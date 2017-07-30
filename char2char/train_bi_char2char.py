@@ -13,16 +13,20 @@ def main(job_id, args):
     save_file_name = args.model_name
     source_dataset = args.data_path + wmts[args.translate]['train'][0][0]
     target_dataset = args.data_path + wmts[args.translate]['train'][0][1]
+    weight_dataset = args.data_path + wmts[args.translate]['train'][0][2]
     valid_source_dataset = args.data_path + wmts[args.translate]['dev'][0][0]
     valid_target_dataset = args.data_path + wmts[args.translate]['dev'][0][1]
+    valid_weight_dataset = args.data_path + wmts[args.translate]['dev'][0][2]
     source_dictionary = args.data_path + wmts[args.translate]['dic'][0][0]
     target_dictionary = args.data_path + wmts[args.translate]['dic'][0][1]
 
     print args.model_path, save_file_name
     print source_dataset
     print target_dataset
+    print weight_dataset
     print valid_source_dataset
     print valid_target_dataset
+    print valid_weight_dataset
     print source_dictionary
     print target_dictionary
     validerr = train(
@@ -66,8 +70,8 @@ def main(job_id, args):
         pbatchFreq=args.pbatchFreq,
         clip_c=args.clip_c,
 
-        datasets=[source_dataset, target_dataset],
-        valid_datasets=[valid_source_dataset, valid_target_dataset],
+        datasets=[source_dataset, target_dataset, weight_dataset],
+        valid_datasets=[valid_source_dataset, valid_target_dataset, valid_weight_dataset],
         dictionaries=[source_dictionary, target_dictionary],
 
         dropout_gru=args.dropout_gru,
