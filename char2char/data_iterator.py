@@ -159,7 +159,7 @@ class TextIterator:
                     self.target_buffer.append(tt)
 
                 if self.weight is not None:
-                    ww = self.weight.readline()
+                    ww = self.weight.readline()[:-1]
                     if ww == "":
                         break
                     self.weight_buffer.append(ww)
@@ -218,7 +218,7 @@ class TextIterator:
 
                 if self.weight is not None:
                     ww = self.weight_buffer.pop()
-                    weight.append(ww)
+                    weight.append(map(float, ww))
 
                 if len(source) >= self.batch_size:
                     break
