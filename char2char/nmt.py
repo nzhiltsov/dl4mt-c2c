@@ -33,13 +33,13 @@ def pred_probs(f_log_probs, prepare_data, options, iterator, pool_stride, verbos
     n_done = 0
     cnt = 0
 
-    for x, y in iterator:
+    for x, y, w in iterator:
         n_done += len(x)
         cnt += 1
 
-        x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x, y, pool_stride)
+        x, x_mask, y, y_mask, n_x, cost_mask = prepare_data(x, y, w, pool_stride)
 
-        pprobs = f_log_probs(x, x_mask, y, y_mask,cost_mask)
+        pprobs = f_log_probs(x, x_mask, y, y_mask, cost_mask)
         for pp in pprobs:
             probs.append(pp)
 
