@@ -173,6 +173,7 @@ def build_model(tparams, options):
     cost = -tensor.log(probs.flatten()[y_flat_idx])
     cost = cost.reshape([y.shape[0], y.shape[1]])
     cost = (cost * y_mask).sum(0)
+    cost = cost * cost_mask
 
     return trng, use_noise, x, x_mask, y, y_mask, opt_ret, cost, cost_mask
 
