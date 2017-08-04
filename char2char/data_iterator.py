@@ -119,7 +119,6 @@ class TextIterator:
 
         source = []
         target = []
-        weight = []
 
         # fill buffer, if it's empty
         if self.target is not None:
@@ -162,24 +161,21 @@ class TextIterator:
                     ww = self.weight.readline()[:-1]
                     if ww == "":
                         break
-                    self.weight_buffer.append(ww)
+                    self.weight_buffer.append(float(ww))
 
             if self.target is not None:
                 # sort by target buffer
                 tlen = numpy.array([len(t) for t in self.target_buffer])
                 tidx = tlen.argsort()
                 _sbuf = [self.source_buffer[i] for i in tidx]
-                _wbuf = [self.weight_buffer[i] for i in tidx]
                 _tbuf = [self.target_buffer[i] for i in tidx]
                 self.target_buffer = _tbuf
             else:
                 slen = numpy.array([len(s) for s in self.source_buffer])
                 sidx = slen.argsort()
                 _sbuf = [self.source_buffer[i] for i in sidx]
-                _wbuf = [self.weight_buffer[i] for i in sidx]
 
             self.source_buffer = _sbuf
-            self.weight_buffer = _wbuf
 
         if self.target is not None:
             if len(self.source_buffer) == 0 or len(self.target_buffer) == 0:
@@ -216,9 +212,8 @@ class TextIterator:
                         tt = [w if w < self.n_words_target else 1 for w in tt]
                     target.append(tt)
 
-                if self.weight is not None:
-                    ww = self.weight_buffer.pop()
-                    weight.append(map(float, ww))
+                ww = self.weight_buffer.pop()
+
 
                 if len(source) >= self.batch_size:
                     break
@@ -230,7 +225,7 @@ class TextIterator:
                 self.end_of_data = False
                 self.reset()
                 raise StopIteration
-            return source, target, weight
+            return source, target, ww
         else:
             if len(source) <= 0:
                 self.end_of_data = False
