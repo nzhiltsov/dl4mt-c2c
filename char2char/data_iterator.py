@@ -119,6 +119,7 @@ class TextIterator:
 
         source = []
         target = []
+        weight = []
 
         # fill buffer, if it's empty
         if self.target is not None:
@@ -213,7 +214,7 @@ class TextIterator:
                     target.append(tt)
 
                 ww = self.weight_buffer.pop()
-
+                weight.append(ww)
 
                 if len(source) >= self.batch_size:
                     break
@@ -225,7 +226,7 @@ class TextIterator:
                 self.end_of_data = False
                 self.reset()
                 raise StopIteration
-            return source, target, ww
+            return source, target, weight
         else:
             if len(source) <= 0:
                 self.end_of_data = False
