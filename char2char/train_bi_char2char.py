@@ -116,8 +116,8 @@ if __name__ == '__main__':
     parser.add_argument('-dropout_gru', type=int, default=0, help="")
     parser.add_argument('-dropout_softmax', type=int, default=0, help="")
 
-    parser.add_argument('-maxlen', type=int, default=450, help="")
-    parser.add_argument('-maxlen_trg', type=int, default=500, help="")
+    parser.add_argument('-maxlen', type=int, default=None, help="")
+    parser.add_argument('-maxlen_trg', type=int, default=None, help="")
     parser.add_argument('-maxlen_sample', type=int, default=500, help="")
 
     parser.add_argument('-re_load', action="store_true", default=False)
