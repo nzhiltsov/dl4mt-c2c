@@ -217,7 +217,7 @@ def train(
 
     valid = TextIterator(source=valid_datasets[0],
                          target=valid_datasets[1],
-                         weight=datasets[2],
+                         weight=valid_datasets[2],
                          source_dict=dictionaries[0],
                          target_dict=dictionaries[1],
                          n_words_source=n_words_src,
