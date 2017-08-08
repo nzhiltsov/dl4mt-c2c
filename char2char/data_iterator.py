@@ -170,7 +170,9 @@ class TextIterator:
                 tidx = tlen.argsort()
                 _sbuf = [self.source_buffer[i] for i in tidx]
                 _tbuf = [self.target_buffer[i] for i in tidx]
+                _wbuf = [self.weight_buffer[i] for i in tidx]
                 self.target_buffer = _tbuf
+                self.weight_buffer = _wbuf
             else:
                 slen = numpy.array([len(s) for s in self.source_buffer])
                 sidx = slen.argsort()
