@@ -603,6 +603,7 @@ def train(
                            model_options,
                            valid,
                            pool_stride,
+                           verboseFreq=verboseFreq
                           ).mean()
 
     print 'Valid ', valid_err
