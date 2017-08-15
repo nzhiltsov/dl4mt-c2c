@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-max_epochs', type=int, default=1000000000000, help="")
     parser.add_argument('-patience', type=int, default=-1, help="")
-    parser.add_argument('-learning_rate', type=float, default=0.0001, help="")
+    parser.add_argument('-learning_rate', type=float, default=0.0002, help="")
 
     parser.add_argument('-n_words_src', type=int, default=304, help="298 for FI-EN")
     parser.add_argument('-n_words', type=int, default=302, help="292 for FI-EN")
