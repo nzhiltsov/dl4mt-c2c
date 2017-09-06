@@ -86,6 +86,7 @@ def main(job_id, args):
         build_sampler=build_sampler,
         gen_sample=gen_sample,
         prepare_data=prepare_data,
+        log_w=args.log_w
     )
     return validerr
 
@@ -144,6 +145,8 @@ if __name__ == '__main__':
 
     parser.add_argument('-source_word_level', type=int, default=0, help="")
     parser.add_argument('-target_word_level', type=int, default=0, help="")
+
+    parser.add_argument('-log_w', action="store_true", default=False)
 
     args = parser.parse_args()
 

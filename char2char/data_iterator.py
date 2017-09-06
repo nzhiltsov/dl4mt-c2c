@@ -28,11 +28,13 @@ class TextIterator:
                  sort_size=20,
                  n_words_source=-1,
                  n_words_target=-1,
-                 shuffle_per_epoch=False):
+                 shuffle_per_epoch=False,
+                 log_w=False):
         self.source_file = source
         self.target_file = target
         self.weight_file = weight
         self.source = fopen(source, 'r')
+        self.log_w = log_w
         with open(source_dict, 'rb') as f:
             self.source_dict = cPickle.load(f)
         if target is not None:
@@ -162,7 +164,8 @@ class TextIterator:
                     ww = self.weight.readline()[:-1]
                     if ww == "":
                         break
-                    self.weight_buffer.append(float(ww))
+                    ww = numpy.log(1+float(ww)) if self.log_w else float(ww)
+                    self.weight_buffer.append(ww)
 
             if self.target is not None:
                 # sort by target buffer

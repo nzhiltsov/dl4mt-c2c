@@ -116,6 +116,7 @@ def train(
       build_sampler=None,
       gen_sample=None,
       prepare_data=None,
+      log_w = False,
       **kwargs
     ):
 
@@ -213,7 +214,8 @@ def train(
                          source_word_level=source_word_level,
                          target_word_level=target_word_level,
                          batch_size=batch_size,
-                         sort_size=sort_size)
+                         sort_size=sort_size,
+                         log_w=log_w)
 
     valid = TextIterator(source=valid_datasets[0],
                          target=valid_datasets[1],
@@ -225,7 +227,8 @@ def train(
                          source_word_level=source_word_level,
                          target_word_level=target_word_level,
                          batch_size=valid_batch_size,
-                         sort_size=sort_size)
+                         sort_size=sort_size,
+                         log_w=log_w)
 
     # create shared variables for parameters
     tparams = init_tparams(params)
